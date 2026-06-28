@@ -2598,3 +2598,11 @@ footer .logo-text {
     gap: 16px !important;
   }
 }
+
+/* Medium screen adjustments (Tablets) */
+@media (max-width: 1024px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+}
