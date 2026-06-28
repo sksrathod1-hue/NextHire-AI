@@ -26,6 +26,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Mobile Hamburger Menu Navigation Toggle
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const navElement = document.querySelector('header nav');
+  if (hamburgerBtn && navElement) {
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      navElement.classList.toggle('active');
+    });
+    
+    // Auto collapse menu when a navigation item is clicked
+    const navLinks = navElement.querySelectorAll('ul li a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navElement.classList.remove('active');
+      });
+    });
+  }
+
   // ==========================================
   // --- 1. Global Mouse Light Glow Tracker ---
   // ==========================================
