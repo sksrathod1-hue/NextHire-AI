@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('[PWA] Service Worker registration failed:', err);
         });
     });
+
+    // Reload the page automatically when a new service worker takes control
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
   }
 
   // ==========================================
