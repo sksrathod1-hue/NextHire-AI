@@ -1,0 +1,24 @@
+{
+  "name": "NextHire AI Career Portal",
+  "short_name": "NextHire AI",
+  "description": "AI-powered career copilot: resume reviews, mock interviews, and compensation analysis.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c0f17",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/static/images/icon-192.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/icon-512.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - NextHire AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/static/images/icon-192.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then((reg) => console.log('[Admin PWA] Service Worker active.'))
+          .catch((err) => console.error('[Admin PWA] Service Worker fail:', err));
+      });
+    }
+  </script>
+  <style>
+    /* Admin Specific Styling (Linear/Vercel Aesthetic) */
+    .admin-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .admin-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .admin-stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .admin-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: var(--font-display);
+    }
+    .admin-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 8px;
+    }
+    .admin-search-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-grow: 1;
+      max-width: 500px;
+    }
+    .admin-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .admin-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(109, 93, 246, 0.15);
+    }
+    .admin-table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow-x: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    .admin-table th, .admin-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .admin-table tr:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+    .badge-unread {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .badge-read {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .admin-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .admin-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--text-secondary);
+    }
+    .admin-btn-delete {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #EF4444;
+    }
+    .admin-btn-delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #EF4444;
+    }
+    /* Modal Styles */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin-modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+    .admin-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .admin-modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .admin-modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .admin-modal-body {
+      color: var(--text-main);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+
+  <div class="noise-overlay"></div>
+
+  <div class="aurora-backdrop">
+    <div class="aurora-blob blob-mint" style="opacity: 0.06;"></div>
+    <div class="aurora-blob blob-amethyst" style="opacity: 0.08;"></div>
+  </div>
+  <div class="cyber-lines"></div>
+
+  <div class="dashboard-shell">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header">
+        <a href="/" class="auth-logo">
+          <div class="logo-circle" style="background: linear-gradient(135deg, var(--color-primary), var(--color-accent));"></div>
+          <span class="logo-text">Next<span>Admin</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <ul>
+          <li>
+            <a href="/admin/dashboard" class="menu-item {% if active_tab == 'dashboard' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="/admin/contacts" class="menu-item {% if active_tab == 'contacts' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              Contact Messages
+            </a>
+          </li>
+          <li>
+            <a href="/admin/subscribers" class="menu-item {% if active_tab == 'subscribers' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              Newsletter Subscribers
+            </a>
+          </li>
+          <li>
+            <a href="/admin/users" class="menu-item {% if active_tab == 'users' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Registered Users
+            </a>
+          </li>
+          <li>
+            <a href="/admin/resumes" class="menu-item {% if active_tab == 'resumes' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              Resume Uploads
+            </a>
+          </li>
+          <li>
+            <a href="/admin/interviews" class="menu-item {% if active_tab == 'interviews' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Interview History
+            </a>
+          </li>
+          <li>
+            <a href="/admin/settings" class="menu-item {% if active_tab == 'settings' %}active{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/dashboard" class="sidebar-user">
+          <div class="user-avatar" style="border: 1px solid var(--color-primary);">
+            {% if admin_user.avatar_url %}
+              <img src="{{ admin_user.avatar_url }}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%;">
+            {% else %}
+              A
+            {% endif %}
+          </div>
+          <div class="user-details">
+            <span class="user-name">{{ admin_user.fullname }}</span>
+            <span class="user-role">Administrator</span>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="dashboard-main">
+      <header class="dashboard-header" style="border-bottom: 1px solid var(--border-color); padding: 20px 32px;">
+        <h1 style="font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text-main);">
+          Admin Console / <span style="font-weight: 500; color: var(--text-secondary);">{{ active_tab | capitalize }}</span>
+        </h1>
+        <div class="header-actions">
+          <a href="/dashboard" class="btn-started" style="padding: 8px 16px; font-size: 13px; text-decoration: none;">Client Workspace</a>
+        </div>
+      </header>
+
+      <div class="admin-container">
+        
+        <!-- DASHBOARD TAB -->
+        {% if active_tab == 'dashboard' %}
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Total Messages</span>
+              <span class="admin-stat-value">{{ stats.total_messages }}</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Unread Messages</span>
+              <span class="admin-stat-value" style="color: #EF4444;">{{ stats.unread_messages }}</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Registered Users</span>
+              <span class="admin-stat-value" style="color: var(--color-secondary);">{{ stats.total_users }}</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Newsletter Subscribers</span>
+              <span class="admin-stat-value" style="color: var(--color-accent);">{{ stats.total_subscribers }}</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px;">
+            <div class="admin-stat-card" style="flex-grow: 1;">
+              <span class="admin-stat-label" style="margin-bottom: 12px; display: block;">System Activity Overview</span>
+              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                  <span style="color: var(--text-secondary);">ATS Resumes Scanned</span>
+                  <span style="font-weight: 600; color: var(--text-main);">{{ stats.total_resumes }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                  <span style="color: var(--text-secondary);">Mock Interviews Served</span>
+                  <span style="font-weight: 600; color: var(--text-main);">{{ stats.total_interviews }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: 4px;">
+                  <span style="color: var(--text-secondary);">Admin Authorization Keys</span>
+                  <span style="font-weight: 600; color: #10B981;">Active</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="admin-stat-card">
+              <span class="admin-stat-label" style="margin-bottom: 12px; display: block;">Developer Quick Links</span>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="/admin/contacts" class="admin-btn" style="text-align: center; text-decoration: none;">Manage Inbox</a>
+                <a href="/admin/users" class="admin-btn" style="text-align: center; text-decoration: none;">View User Directory</a>
+                <a href="/admin/settings" class="admin-btn" style="text-align: center; text-decoration: none;">System Parameters</a>
+              </div>
+            </div>
+          </div>
+
+        <!-- CONTACT MESSAGES TAB -->
+        {% elif active_tab == 'contacts' %}
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Total Inbox</span>
+              <span class="admin-stat-value">{{ stats.total_messages }}</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Unread Badges</span>
+              <span class="admin-stat-value" style="color: #EF4444;">{{ stats.unread_messages }}</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-label">Read Badges</span>
+              <span class="admin-stat-value" style="color: #10B981;">{{ stats.read_messages }}</span>
+            </div>
+          </div>
+
+          <div class="admin-controls">
+            <form method="GET" action="/admin/contacts" class="admin-search-wrapper">
+              <input type="text" name="search" placeholder="Search by name or email..." class="admin-input" value="{{ search_query }}">
+              <select name="status" class="admin-input" style="cursor: pointer;">
+                <option value="">All Statuses</option>
+                <option value="Unread" {% if status_filter == 'Unread' %}selected{% endif %}>Unread Only</option>
+                <option value="Read" {% if status_filter == 'Read' %}selected{% endif %}>Read Only</option>
+              </select>
+              <button type="submit" class="admin-btn" style="background: var(--color-primary); border-color: var(--color-primary); color: #fff;">Apply Filters</button>
+              {% if search_query or status_filter %}
+                <a href="/admin/contacts" class="admin-btn" style="text-decoration: none;">Reset</a>
+              {% endif %}
+            </form>
+            <div style="font-size: 13px; color: var(--text-secondary);">
+              Showing {{ contacts | length }} records (newest first)
+            </div>
+          </div>
+
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Message Preview</th>
+                  <th>Received Date</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for msg in contacts %}
+                  <tr id="row-{{ msg.id }}">
+                    <td>
+                      <span class="badge {% if msg.status == 'Unread' %}badge-unread{% else %}badge-read{% endif %}" id="badge-{{ msg.id }}">
+                        {{ msg.status }}
+                      </span>
+                    </td>
+                    <td style="font-weight: 600; color: var(--text-main);">{{ msg.name }}</td>
+                    <td style="color: var(--text-secondary);">{{ msg.email }}</td>
+                    <td style="color: var(--text-secondary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      {{ msg.message }}
+                    </td>
+                    <td style="color: var(--text-secondary); font-size: 13px;">{{ msg.created_at }}</td>
+                    <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                      <button type="button" class="admin-btn" onclick="viewMessage('{{ msg.name }}', '{{ msg.email }}', '{{ msg.created_at }}', `{{ msg.message | replace('`','\\`') }}`)">View</button>
+                      <button type="button" class="admin-btn" id="btn-toggle-{{ msg.id }}" onclick="toggleRead({{ msg.id }}, '{{ msg.status }}')">
+                        Mark {% if msg.status == 'Unread' %}Read{% else %}Unread{% endif %}
+                      </button>
+                      <button type="button" class="admin-btn admin-btn-delete" onclick="deleteMessage({{ msg.id }})">Delete</button>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 40px;">No messages match criteria.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <!-- NEWSLETTER SUBSCRIBERS TAB -->
+        {% elif active_tab == 'subscribers' %}
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Subscriber Email</th>
+                  <th>Subscribed Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sub in subscribers %}
+                  <tr>
+                    <td style="color: var(--text-secondary);">#{{ sub.id }}</td>
+                    <td style="font-weight: 600; color: var(--text-main);">{{ sub.email }}</td>
+                    <td style="color: var(--text-secondary);">{{ sub.created_at }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 40px;">No subscribers found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <!-- REGISTERED USERS TAB -->
+        {% elif active_tab == 'users' %}
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Target Role</th>
+                  <th>Experience</th>
+                  <th>Admin Privileges</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for u in users %}
+                  <tr>
+                    <td style="color: var(--text-secondary);">#{{ u.id }}</td>
+                    <td style="font-weight: 600; color: var(--text-main);">{{ u.fullname }}</td>
+                    <td style="color: var(--text-secondary);">{{ u.email }}</td>
+                    <td>{{ u.target_role }}</td>
+                    <td>{{ u.experience_lvl }}</td>
+                    <td>
+                      {% if u.is_admin %}
+                        <span class="badge badge-read">Admin</span>
+                      {% else %}
+                        <span class="badge" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color);">Candidate</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <!-- RESUME UPLOADS TAB -->
+        {% elif active_tab == 'resumes' %}
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Filename</th>
+                  <th>ATS Score</th>
+                  <th>Processed Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in resumes %}
+                  <tr>
+                    <td style="color: var(--text-secondary);">#{{ r.id }}</td>
+                    <td style="font-weight: 600; color: var(--text-main);">{{ r.fullname }}</td>
+                    <td>{{ r.filename }}</td>
+                    <td>
+                      <span class="badge badge-read" style="background: rgba(109, 93, 246, 0.1); color: var(--color-primary); border-color: rgba(109, 93, 246, 0.2);">
+                        {{ r.ats_score }}/100
+                      </span>
+                    </td>
+                    <td style="color: var(--text-secondary);">{{ r.created_at }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 40px;">No resumes uploaded yet.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <!-- INTERVIEW HISTORY TAB -->
+        {% elif active_tab == 'interviews' %}
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Candidate</th>
+                  <th>Target Role</th>
+                  <th>Question Preview</th>
+                  <th>Evaluation Score</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for iv in interviews %}
+                  <tr>
+                    <td style="color: var(--text-secondary);">#{{ iv.id }}</td>
+                    <td style="font-weight: 600; color: var(--text-main);">{{ iv.fullname }}</td>
+                    <td>{{ iv.role }}</td>
+                    <td style="color: var(--text-secondary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ iv.question }}</td>
+                    <td>
+                      <span class="badge badge-read" style="background: rgba(79, 140, 255, 0.1); color: var(--color-secondary); border-color: rgba(79, 140, 255, 0.2);">
+                        {{ iv.score }}/100
+                      </span>
+                    </td>
+                    <td style="color: var(--text-secondary);">{{ iv.created_at }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 40px;">No interview mock sessions recorded.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <!-- SETTINGS TAB -->
+        {% elif active_tab == 'settings' %}
+          <div class="admin-stat-card" style="max-width: 600px;">
+            <span class="admin-stat-label" style="margin-bottom: 16px; display: block; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">System Settings</span>
+            <div style="display: flex; flex-direction: column; gap: 16px; font-size: 14px;">
+              <div>
+                <label style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">OAuth Sync Domain</label>
+                <input type="text" class="admin-input" style="width: 100%; box-sizing: border-box;" value="http://localhost:5000" readonly>
+              </div>
+              <div>
+                <label style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Global Rate Limits</label>
+                <input type="text" class="admin-input" style="width: 100%; box-sizing: border-box;" value="60 requests / minute" readonly>
+              </div>
+              <div>
+                <label style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Database Dialect</label>
+                <input type="text" class="admin-input" style="width: 100%; box-sizing: border-box;" value="SQLite Persistent (nexthire.db)" readonly>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Message Detail Modal -->
+  <div class="admin-modal" id="msgModal">
+    <div class="admin-modal-content">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalSender">Sender Details</h3>
+        <button class="admin-modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px;">
+        <span id="modalEmail">Email: sender@domain.com</span>
+        <span id="modalDate">Date: 2026-06-28 00:00:00</span>
+      </div>
+      <div class="admin-modal-body">
+        <h4 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Message:</h4>
+        <p id="modalMsg" style="margin: 0; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); white-space: pre-wrap; word-break: break-all;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // AJAX Actions
+    function toggleRead(msgId, currentStatus) {
+      const action = currentStatus === 'Unread' ? 'read' : 'unread';
+      fetch(`/admin/contacts/${msgId}/${action}`, { method: 'POST' })
+        .then(response => {
+          if (!response.ok) throw new Error("Action failed.");
+          return response.json();
+        })
+        .then(data => {
+          // Success: swap status label classes and properties
+          const badge = document.getElementById(`badge-${msgId}`);
+          const btn = document.getElementById(`btn-toggle-${msgId}`);
+          if (action === 'read') {
+            badge.className = 'badge badge-read';
+            badge.textContent = 'Read';
+            btn.textContent = 'Mark Unread';
+            btn.setAttribute('onclick', `toggleRead(${msgId}, 'Read')`);
+          } else {
+            badge.className = 'badge badge-unread';
+            badge.textContent = 'Unread';
+            btn.textContent = 'Mark Read';
+            btn.setAttribute('onclick', `toggleRead(${msgId}, 'Unread')`);
+          }
+        })
+        .catch(err => alert(err.message));
+    }
+
+    function deleteMessage(msgId) {
+      if (!confirm("Are you sure you want to permanently delete this contact record?")) return;
+      fetch(`/admin/contacts/${msgId}/delete`, { method: 'POST' })
+        .then(response => {
+          if (!response.ok) throw new Error("Deletion failed.");
+          return response.json();
+        })
+        .then(data => {
+          const row = document.getElementById(`row-${msgId}`);
+          row.style.opacity = '0';
+          row.style.transform = 'scale(0.95)';
+          row.style.transition = 'all 0.3s';
+          setTimeout(() => row.remove(), 300);
+        })
+        .catch(err => alert(err.message));
+    }
+
+    // Modal Control
+    const modal = document.getElementById('msgModal');
+    const modalSender = document.getElementById('modalSender');
+    const modalEmail = document.getElementById('modalEmail');
+    const modalDate = document.getElementById('modalDate');
+    const modalMsg = document.getElementById('modalMsg');
+
+    function viewMessage(name, email, date, msg) {
+      modalSender.textContent = name;
+      modalEmail.textContent = `Email: ${email}`;
+      modalDate.textContent = `Received: ${date}`;
+      modalMsg.textContent = msg;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>

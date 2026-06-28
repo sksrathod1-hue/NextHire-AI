@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextHire AI - Ace Every Interview with AI</title>
+  <meta name="description" content="Upload your resume, analyze ATS score matching metrics, conduct mock voice interviews, and speed up your recruitment.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/static/images/icon-192.jpg">
+</head>
+<body>
+
+  <!-- Dynamic Film Grain Noise Overlay -->
+  <div class="noise-overlay"></div>
+
+  <!-- Aurora Backdrop Shifting Light Elements -->
+  <div class="aurora-backdrop">
+    <div class="aurora-blob blob-mint"></div>
+    <div class="aurora-blob blob-amethyst"></div>
+    <div class="aurora-blob blob-chrome"></div>
+  </div>
+  <div class="cyber-lines"></div>
+  <div class="mouse-glow-tracker" id="mouseGlow"></div>
+
+  <!-- Transparent Sticky Navigation -->
+  <header>
+    <div class="logo-container">
+      <div class="logo-circle"></div>
+      <span class="logo-text">Next<span>Hire AI</span></span>
+    </div>
+
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      {% if session.get('user_id') %}
+        <a href="/dashboard" class="btn-started">Go to Dashboard</a>
+        <a href="/logout" class="btn-login" style="margin-left: 8px;">Logout</a>
+      {% else %}
+        <a href="/login" class="btn-login">Login</a>
+        <a href="/signup" class="btn-started">Get Started</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero-section" id="home" style="position: relative;">
+    <div class="hero-content">
+      <div class="badge-tag">
+        <span class="badge-pulse"></span>
+        ✨ AI Powered Career Platform
+      </div>
+
+      <h1 class="hero-title">
+        Ace Your Next Interview<br>
+        with <span class="iridescent-text">NextHire AI</span>
+      </h1>
+
+      <p class="hero-desc">
+        The ultimate AI career copilot that audits your resume, generates custom mock interviews, and runs live readiness grading.
+      </p>
+
+      <div class="hero-actions" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
+        {% if session.get('user_id') %}
+          <a href="/dashboard" class="btn-action-primary">
+            Go to Dashboard
+          </a>
+        {% else %}
+          <a href="/signup" class="btn-action-primary">
+            Get Started
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Social Proof element -->
+      <div class="social-proof" style="display: flex; align-items: center; gap: 16px; margin-top: 10px;">
+        <div class="avatar-group" style="display: flex; align-items: center;">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="User 1" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="User 2" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="User 3" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="User 4" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); object-fit: cover;">
+        </div>
+        <div class="rating-info" style="display: flex; flex-direction: column; gap: 2px;">
+          <div class="stars" style="color: #FBBF24; font-size: 14px; letter-spacing: 1px;">★★★★★</div>
+          <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Trusted by 50,000+ job seekers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Glowing 3D SaaS Mockup & Floating HUDs -->
+    <div class="card-3d-wrapper" style="position: relative;">
+      <!-- Main card containing the SaaS dashboard mockup -->
+      <div class="holo-3d-card" id="holoCard" style="height: 380px;">
+        <div class="holo-3d-card-inner" style="padding: 24px; overflow: hidden; position: relative; border-radius: 24px; height: 100%; width: 100%; display: flex; flex-direction: column; gap: 16px; background: rgba(17, 24, 39, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08);">
+          
+          <!-- Mockup Header -->
+          <div class="mockup-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; z-index: 5;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); box-shadow: 0 0 8px var(--color-primary);"></div>
+              <span style="font-family: var(--font-body); font-size: 11px; letter-spacing: 0.5px; color: var(--text-secondary); font-weight: 600;">WORKSPACE_ACTIVE</span>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <span style="font-size: 9px; padding: 2px 8px; border-radius: 12px; background: rgba(109, 93, 246, 0.1); color: var(--color-primary); font-weight: 600; font-family: var(--font-body);">LIVE FEED</span>
+            </div>
+          </div>
+
+          <!-- Mockup Top Row: Widgets -->
+          <div class="mockup-widgets" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; z-index: 5;">
+            <!-- Widget 1: Resume Score -->
+            <div class="mockup-widget-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px;">
+              <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="42" height="42" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-dasharray="92 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
+                </svg>
+                <span style="position: absolute; font-size: 11px; font-weight: 700; color: var(--text-main); font-family: var(--font-body);">92%</span>
+              </div>
+              <div style="display: flex; flex-direction: column; min-width: 0;">
+                <span style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Resume Score</span>
+                <span style="font-size: 12px; font-weight: 700; color: var(--color-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Excellent Match</span>
+              </div>
+            </div>
+
+            <!-- Widget 2: ATS Match -->
+            <div class="mockup-widget-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px;">
+              <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="42" height="42" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="var(--color-secondary)" stroke-width="3.5" stroke-dasharray="88 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
+                </svg>
+                <span style="position: absolute; font-size: 11px; font-weight: 700; color: var(--text-main); font-family: var(--font-body);">88%</span>
+              </div>
+              <div style="display: flex; flex-direction: column; min-width: 0;">
+                <span style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">ATS Match</span>
+                <span style="font-size: 12px; font-weight: 700; color: var(--color-secondary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Strong Profile</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mockup Bottom Row: Chart and details -->
+          <div class="mockup-details-grid" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px; flex-grow: 1; z-index: 5; min-height: 0;">
+            <!-- Line Chart Box -->
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                <span style="font-size: 9px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Weekly Progress</span>
+                <span style="font-size: 8px; color: var(--color-primary); font-family: var(--font-body); font-weight: bold; flex-shrink: 0;">+14.2%</span>
+              </div>
+              <div style="flex-grow: 1; position: relative; margin-top: 4px; min-height: 0;">
+                <svg viewBox="0 0 200 70" width="100%" height="100%" style="overflow: visible; display: block;">
+                  <defs>
+                    <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.15"/>
+                      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <line x1="0" y1="10" x2="200" y2="10" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
+                  <line x1="0" y1="35" x2="200" y2="35" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
+                  <line x1="0" y1="60" x2="200" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
+                  <path d="M 0 55 C 40 50, 60 20, 100 28 C 140 35, 160 12, 200 8 L 200 70 L 0 70 Z" fill="url(#chartGlow)"></path>
+                  <path d="M 0 55 C 40 50, 60 20, 100 28 C 140 35, 160 12, 200 8" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"></path>
+                  <circle cx="200" cy="8" r="3" fill="#fff" stroke="var(--color-primary)" stroke-width="1.5"></circle>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Upcoming Interviews & Recent Activity List -->
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; justify-content: space-between;">
+              <div>
+                <span style="font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Upcoming Interview</span>
+                <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 6px 8px; border-radius: 8px; margin-top: 4px; min-width: 0;">
+                  <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-primary); flex-shrink: 0;"></div>
+                  <div style="display: flex; flex-direction: column; min-width: 0;">
+                    <span style="font-size: 9px; font-weight: 700; color: var(--text-main); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Google Technical</span>
+                    <span style="font-size: 7px; color: var(--text-secondary);">Today, 3:00 PM</span>
+                  </div>
+                </div>
+              </div>
+              <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
+                <span style="font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Recent Activity</span>
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+                  <div style="font-size: 7px; color: var(--text-secondary); line-height: 1.2;">
+                    • <strong style="color: #fff;">Resume updated</strong> - scored 92%
+                  </div>
+                  <div style="font-size: 7px; color: var(--text-secondary); line-height: 1.2;">
+                    • <strong style="color: #fff;">Mock evaluation</strong> - 85% score
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Glass widgets placed outside the clip card but inside the 3D tilt perspective wrapper -->
+      <!-- Widget 1: 85% Interview Readiness with circular progress gauge (Left-Middle) -->
+      <div class="floating-stat-box stat-box-1" style="top: 35%; left: -14%;">
+        <div class="stat-progress-circle" style="position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="34" height="34" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"></circle>
+            <circle cx="18" cy="18" r="14" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-dasharray="85 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">85%</span>
+          <span class="stat-lbl">Interview Readiness</span>
+        </div>
+      </div>
+
+      <!-- Widget 2: Ready Interview Coach with profile icon (Bottom-Left) -->
+      <div class="floating-stat-box stat-box-2" style="bottom: 10%; left: -8%;">
+        <div class="stat-icon" style="color: var(--color-secondary); background: rgba(79, 140, 255, 0.08); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">Active Coach</span>
+          <span class="stat-lbl">Ready to Practice</span>
+        </div>
+      </div>
+
+      <!-- Widget 3: Horizontal indicators (Top-Right) -->
+      <div class="floating-stat-box stat-box-3" style="top: 15%; right: -15%; padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; width: 140px; align-items: stretch;">
+        <div class="stat-slider-row" style="display: flex; align-items: center; gap: 8px;">
+          <div class="stat-slider-bar" style="flex-grow: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; position: relative; overflow: hidden;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 75%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
+          </div>
+        </div>
+        <div class="stat-slider-row" style="display: flex; align-items: center; gap: 8px;">
+          <div class="stat-slider-bar" style="flex-grow: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; position: relative; overflow: hidden;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 45%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget 4: Chart bars (Bottom-Right) -->
+      <div class="floating-stat-box stat-box-4" style="bottom: 20%; right: -12%; padding: 14px; display: flex; gap: 6px; align-items: flex-end; height: 50px;">
+        <div class="stat-bar" style="width: 5px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: var(--color-primary);"></div></div>
+        <div class="stat-bar" style="width: 5px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 90%; background: var(--color-primary);"></div></div>
+        <div class="stat-bar" style="width: 5px; height: 16px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: var(--color-accent);"></div></div>
+      </div>
+    </div>
+
+    <!-- Decorative rotating sparkle star matching the bottom right of mockup -->
+    <div class="decor-star" style="position: absolute; bottom: -60px; right: 8%; width: 56px; height: 56px; opacity: 0.75; pointer-events: none; z-index: 5;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="width: 100%; height: 100%; color: rgba(255,255,255,0.35);">
+        <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="currentColor"></path>
+      </svg>
+    </div>
+  </main>
+
+  <!-- Trusted Companies Section -->
+  <section class="companies-section">
+    <h3 class="section-subtitle">TRUSTED BY CANDIDATES AT GLOBAL TEAMS</h3>
+    <div class="infinite-carousel-wrapper">
+      <div class="infinite-carousel-track">
+        <!-- Scroll items (Double sets for infinite scroll loop) -->
+        <span class="company-logo">Google</span>
+        <span class="company-logo">Microsoft</span>
+        <span class="company-logo">Amazon</span>
+        <span class="company-logo">Meta</span>
+        <span class="company-logo">Adobe</span>
+        <span class="company-logo">Apple</span>
+        <span class="company-logo">Oracle</span>
+        <!-- Duplicates -->
+        <span class="company-logo">Google</span>
+        <span class="company-logo">Microsoft</span>
+        <span class="company-logo">Amazon</span>
+        <span class="company-logo">Meta</span>
+        <span class="company-logo">Adobe</span>
+        <span class="company-logo">Apple</span>
+        <span class="company-logo">Oracle</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features Grid -->
+  <section class="features-section" id="features" style="padding: 100px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-family: var(--font-display); font-size: 38px; font-weight: 700; margin-bottom: 16px;">Advanced Platform Features</h2>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 16px;">Everything you need to optimize your resume and master your target job interviews.</p>
+    </div>
+
+    <div class="bento-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto;">
+      <!-- Card 1: Resume Analyzer -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-primary); background: var(--color-accent-light); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">Resume Analyzer</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Parse structural metadata and check key semantic alignment against target descriptions.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Card 2: ATS Checker -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-secondary); background: rgba(79, 140, 255, 0.08); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">ATS Optimizer</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Identify layout headers and verify keyword tracking configurations before submission.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Card 3: AI Mock Coach -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-accent); background: rgba(139, 92, 246, 0.08); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">AI Mock Coach</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Practice live tech and behavioral hiring rounds with adaptive voice simulations.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Card 4: AI Diagnostics -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-primary); background: var(--color-accent-light); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">AI Diagnostics</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Get instant response evaluations outlining semantic gap fixes and key strengths.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Card 5: Readiness Tracker -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-secondary); background: rgba(79, 140, 255, 0.08); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">Readiness Analytics</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Monitor weekly mock session rating curves and historical progress scores.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Card 6: Company-Specific Prep -->
+      <div class="bento-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; transition: all 0.3s ease;">
+        <div>
+          <div class="bento-icon" style="color: var(--color-accent); background: rgba(139, 92, 246, 0.08); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="16"></line><line x1="15" y1="22" x2="15" y2="16"></line><line x1="9" y1="16" x2="15" y2="16"></line><path d="M8 6h2v2H8V6zm0 4h2v2H8v-2zm8-4h2v2h-2V6zm0 4h2v2h-2v-2z"></path></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">Company-Specific Prep</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">Generate custom mock questions tailored to your parsed resume profile and the exact company (e.g. Google, Apple, Vercel) you are targeting.</p>
+        </div>
+        <a href="/login" class="arrow-btn" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); text-decoration: none; transition: all 0.3s; align-self: flex-start;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="workflow-section" id="how-it-works" style="padding: 100px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-family: var(--font-display); font-size: 38px; font-weight: 700; margin-bottom: 16px;">How It Works</h2>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 16px;">Master your interview preparation process in three simple, high-fidelity steps.</p>
+    </div>
+
+    <!-- Timeline Wrapper -->
+    <div class="timeline-container" style="position: relative; max-width: 1000px; margin: 0 auto; padding: 20px 0;">
+      <!-- Connecting line in background -->
+      <div class="timeline-line" style="position: absolute; top: 40px; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent)); z-index: 1;"></div>
+      
+      <div class="timeline-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; position: relative; z-index: 2;">
+        <!-- Step 1 -->
+        <div class="timeline-step" style="text-align: center;">
+          <div class="step-num" style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--color-primary); color: #fff; font-family: var(--font-display); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 0 16px rgba(109, 93, 246, 0.2);">1</div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Upload Resume</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; padding: 0 20px;">Upload your CV to parse structural metadata and scan ATS keyword matches.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="timeline-step" style="text-align: center;">
+          <div class="step-num" style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--color-secondary); color: #fff; font-family: var(--font-display); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 0 16px rgba(79, 140, 255, 0.2);">2</div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Practice Interview</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; padding: 0 20px;">Engage in real-time adaptive tech or behavioral mock interviews.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step" style="text-align: center;">
+          <div class="step-num" style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--color-accent); color: #fff; font-family: var(--font-display); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 0 16px rgba(139, 92, 246, 0.2);">3</div>
+          <h4 style="font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Get AI Feedback</h4>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; padding: 0 20px;">Ingest automated ratings highlighting keyword gaps and profile suggestions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Counters -->
+  <section class="stats-section" style="padding: 80px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1100px; margin: 0 auto; text-align: center;">
+      <div class="stat-counter-item">
+        <h3 class="stat-number" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">100K+</h3>
+        <span class="stat-label" style="font-size: 14px; color: var(--text-secondary); font-weight: 500;">Users</span>
+      </div>
+      <div class="stat-counter-item">
+        <h3 class="stat-number" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--color-secondary); margin-bottom: 8px;">95%</h3>
+        <span class="stat-label" style="font-size: 14px; color: var(--text-secondary); font-weight: 500;">ATS Accuracy</span>
+      </div>
+      <div class="stat-counter-item">
+        <h3 class="stat-number" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">50K+</h3>
+        <span class="stat-label" style="font-size: 14px; color: var(--text-secondary); font-weight: 500;">Mock Interviews</span>
+      </div>
+      <div class="stat-counter-item">
+        <h3 class="stat-number" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--color-secondary); margin-bottom: 8px;">98%</h3>
+        <span class="stat-label" style="font-size: 14px; color: var(--text-secondary); font-weight: 500;">Success Rate</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section" style="padding: 100px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-family: var(--font-display); font-size: 38px; font-weight: 700; margin-bottom: 16px;">Success Reviews</h2>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 16px;">Read feedback summaries from candidates who optimized their career prep.</p>
+    </div>
+
+    <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto;">
+      <!-- Card 1 -->
+      <div class="testimonial-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;">
+        <p class="testimonial-text" style="font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-style: italic;">"The resume suggestions and matching evaluations helped me restructure my formatting profile. Scored a 92% and land matching job callbacks within 2 weeks."</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <div class="testimonial-user" style="display: flex; align-items: center; gap: 12px;">
+            <div class="user-avatar" style="background-color: var(--color-primary); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">JD</div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h4 style="font-size: 14px; font-weight: 600; color: var(--text-main);">Jane Doe</h4>
+              <span style="font-size: 11px; color: var(--text-secondary);">Cloud Engineer @ Apple</span>
+            </div>
+          </div>
+          <div class="testimonial-stars" style="color: #FBBF24; font-size: 12px;">★★★★★</div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="testimonial-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;">
+        <p class="testimonial-text" style="font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-style: italic;">"Conducting hard simulations with live questions helped minimize my interview anxiety. The stopwatch tracking is incredibly close to actual system screens."</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <div class="testimonial-user" style="display: flex; align-items: center; gap: 12px;">
+            <div class="user-avatar" style="background-color: var(--color-accent); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">RK</div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h4 style="font-size: 14px; font-weight: 600; color: var(--text-main);">Richard Kahn</h4>
+              <span style="font-size: 11px; color: var(--text-secondary);">Architect @ Vercel</span>
+            </div>
+          </div>
+          <div class="testimonial-stars" style="color: #FBBF24; font-size: 12px;">★★★★★</div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="testimonial-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;">
+        <p class="testimonial-text" style="font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-style: italic;">"NextHire AI was the key to my Microsoft technical interview success. The system design mock questions and grading rubrics are exceptionally accurate."</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <div class="testimonial-user" style="display: flex; align-items: center; gap: 12px;">
+            <div class="user-avatar" style="background-color: var(--color-primary); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">AM</div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <h4 style="font-size: 14px; font-weight: 600; color: var(--text-main);">Alex Miller</h4>
+              <span style="font-size: 11px; color: var(--text-secondary);">Developer @ Microsoft</span>
+            </div>
+          </div>
+          <div class="testimonial-stars" style="color: #FBBF24; font-size: 12px;">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about-section" id="about" style="padding: 100px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-family: var(--font-display); font-size: 38px; font-weight: 700; margin-bottom: 16px;">Behind NextHire AI</h2>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 16px;">Our mission is to level the technical onboarding playing field using hyper-personalized intelligence.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1000px; margin: 0 auto; align-items: center;">
+      <div>
+        <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 600; margin-bottom: 20px; color: var(--text-main);">Democratizing Career Acceleration</h3>
+        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.8; margin-bottom: 16px;">
+          Traditional interview preparation is fragmented, expensive, and outdated. NextHire AI was established by a collaborative group of software architects, data engineers, and AI practitioners to automate coaching and review feedback.
+        </p>
+        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.8;">
+          By parsing resume profiles and tailoring simulator prompts around real-world company telemetry, we help developers unlock core technical opportunities at organizations like Google, Vercel, Apple, and Microsoft.
+        </p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; transition: border-color 0.2s;">
+          <h4 style="font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--color-primary); margin: 0 0 8px 0;">100%</h4>
+          <p style="color: var(--text-secondary); font-size: 13px; margin: 0; line-height: 1.4;">Secure cryptographically verified authentications via Google OAuth 2.0.</p>
+        </div>
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; transition: border-color 0.2s;">
+          <h4 style="font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--color-secondary); margin: 0 0 8px 0;">0ms</h4>
+          <p style="color: var(--text-secondary); font-size: 13px; margin: 0; line-height: 1.4;">Zero-latency client evaluations highlighting keyword gaps instantly.</p>
+        </div>
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; transition: border-color 0.2s;">
+          <h4 style="font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--color-accent); margin: 0 0 8px 0;">50K+</h4>
+          <p style="color: var(--text-secondary); font-size: 13px; margin: 0; line-height: 1.4;">Simulated developer sessions successfully evaluated.</p>
+        </div>
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; transition: border-color 0.2s;">
+          <h4 style="font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--color-secondary); margin: 0 0 8px 0;">FAANG</h4>
+          <p style="color: var(--text-secondary); font-size: 13px; margin: 0; line-height: 1.4;">Telemetry aligned directly with global standard industry criteria.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Accordions -->
+  <section class="faq-section" id="faq">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2>Frequently Asked Questions</h2>
+      <p>Find quick answers to core system operations.</p>
+    </div>
+
+    <div class="faq-container">
+      <div class="faq-item">
+        <button class="faq-trigger">
+          <span>How does the AI Resume Analyzer calculate the match rating?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-panel">
+          <p>The parser compares keyword density, structural header configurations, and overall action verb frequencies against FAANG profiles and database requirements to output a final percentage compatibility.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-trigger">
+          <span>Can I generate specific technical interview questions?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-panel">
+          <p>Yes. The dashboard lets you input custom job roles (such as Senior Frontend Architect) and difficulty targets to pull relevant coding and design question decks.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-trigger">
+          <span>Is the platform data connection secure?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-panel">
+          <p>Absolutely. All files and transcript records are encrypted using SHA-256 protocols and processed securely through isolated API connection pipelines.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section" id="contact" style="padding: 100px 8%; border-top: 1px solid var(--border-color); background-color: var(--bg-dark);">
+    <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+      <h2 style="font-family: var(--font-display); font-size: 38px; font-weight: 700; margin-bottom: 16px;">Get in Touch</h2>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 16px;">Have questions? Reach out directly or send us a message below.</p>
+    </div>
+
+    <div class="contact-container" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; max-width: 1100px; margin: 0 auto;">
+      <!-- Contact Info Cards -->
+      <div class="contact-info" style="display: flex; flex-direction: column; gap: 24px;">
+        <!-- Card 1: Email -->
+        <div class="contact-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; align-items: flex-start; gap: 20px; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--color-primary)';" onmouseout="this.style.borderColor='var(--border-color)';">
+          <div class="contact-icon-wrapper" style="background: rgba(109, 93, 246, 0.1); color: var(--color-primary); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div>
+            <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Email Us</h4>
+            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px;">For support, inquiries, and platform feedback.</p>
+            <a href="mailto:sksrathod1@gmail.com" style="font-size: 15px; font-weight: 700; color: var(--color-primary); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" onmouseover="this.style.color='#8B5CF6';" onmouseout="this.style.color='var(--color-primary)';">
+              sksrathod1@gmail.com
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: Phone -->
+        <div class="contact-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; display: flex; align-items: flex-start; gap: 20px; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--color-primary)';" onmouseout="this.style.borderColor='var(--border-color)';">
+          <div class="contact-icon-wrapper" style="background: rgba(79, 140, 255, 0.1); color: var(--color-indigo); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <div>
+            <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Call Us</h4>
+            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px;">Direct connection to our customer advisory hotline.</p>
+            <a href="tel:+199867895902" style="font-size: 15px; font-weight: 700; color: var(--color-indigo); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" onmouseover="this.style.color='#6D5DF6';" onmouseout="this.style.color='var(--color-indigo)';">
+              +19 9867895902
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <form class="contact-form" id="contactForm" style="background: rgba(17, 24, 39, 0.55); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px;">
+            <label for="contact-name" style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Name</label>
+            <input type="text" id="contact-name" placeholder="John Doe" required style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='0 0 0 3px rgba(109, 93, 246, 0.25)';" onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none';">
+          </div>
+          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px;">
+            <label for="contact-email" style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Email</label>
+            <input type="email" id="contact-email" placeholder="john@example.com" required style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='0 0 0 3px rgba(109, 93, 246, 0.25)';" onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none';">
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="contact-message" style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Message</label>
+          <textarea id="contact-message" rows="5" placeholder="How can we help accelerate your career?" required style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-main); font-size: 14px; outline: none; resize: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='0 0 0 3px rgba(109, 93, 246, 0.25)';" onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none';"></textarea>
+        </div>
+
+        <button type="submit" style="background: var(--color-primary); color: #fff; border: none; border-radius: 30px; padding: 14px 28px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 10px; box-shadow: 0 4px 12px rgba(109, 93, 246, 0.25);" onmouseover="this.style.background='#5b4ee4'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='var(--color-primary)'; this.style.transform='none';">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Newsletter Signup -->
+  <section class="newsletter-section">
+    <div class="newsletter-box">
+      <h3>Get career acceleration tips</h3>
+      <p>Subscribe to receive optimized resume checklists and target interview question decks.</p>
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" placeholder="name@domain.com" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo-container" style="padding: 0;">
+          <div class="logo-circle"></div>
+          <span class="logo-text">Next<span>Hire AI</span></span>
+        </div>
+        <p>Accentuating matching scores and speed through generative career assessments.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Support Node</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 NextHire AI Inc. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
