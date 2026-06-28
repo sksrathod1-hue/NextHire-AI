@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexthire-pwa-cache-v5';
+const CACHE_NAME = 'nexthire-pwa-cache-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/static/css/style.css',
