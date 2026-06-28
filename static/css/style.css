@@ -2361,6 +2361,47 @@ footer .logo-text {
     height: 320px !important;
   }
 
+  /* 3b. Landing Page Grids Responsive override */
+  .bento-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .bento-card {
+    padding: 24px !important;
+    min-height: auto !important;
+  }
+
+  .timeline-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .timeline-grid::before {
+    display: none !important;
+  }
+
+  .stats-section > div {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .testimonial-card {
+    padding: 24px !important;
+  }
+
+  .about-section > div {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .contact-container {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
   /* 4. Dashboard Shell Mobile Layout override */
   .dashboard-shell {
     grid-template-columns: 1fr !important;
