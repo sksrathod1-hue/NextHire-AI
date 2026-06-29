@@ -11,6 +11,151 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="/static/images/icon-192.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap');
+
+    :root {
+      --bg-dark: hsl(201, 100%, 13%);
+      --text-main: hsl(0, 0%, 100%);
+      --text-secondary: hsl(240, 4%, 66%);
+      --border-color: hsl(0, 0%, 18%);
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* Hide unwanted elements on landing page */
+    .aurora-backdrop, .cyber-lines, #mouseGlow {
+      display: none !important;
+    }
+
+    /* Header styling overrides */
+    header {
+      position: relative !important;
+      z-index: 20 !important;
+      max-width: 80rem !important;
+      margin: 0 auto !important;
+      background: transparent !important;
+      border-bottom: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+
+    .logo-container {
+      font-family: 'Instrument Serif', serif !important;
+      font-size: 1.875rem !important;
+      letter-spacing: -0.025em !important;
+      color: var(--text-main) !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .logo-circle {
+      display: none !important;
+    }
+
+    .logo-text {
+      font-family: 'Instrument Serif', serif !important;
+      font-size: 1.875rem !important;
+      color: var(--text-main) !important;
+    }
+
+    .logo-text span {
+      color: var(--text-main) !important;
+      font-family: 'Instrument Serif', serif !important;
+    }
+
+    .logo-text::after {
+      content: '®';
+      font-size: 0.75rem;
+      vertical-align: super;
+      margin-left: 2px;
+      font-family: var(--font-body);
+    }
+
+    header nav ul li a {
+      font-size: 0.875rem !important;
+      color: var(--text-secondary) !important;
+      transition: color 0.3s ease !important;
+      font-family: var(--font-body) !important;
+    }
+
+    header nav ul li a:hover {
+      color: var(--text-main) !important;
+    }
+
+    /* Liquid glass buttons overrides */
+    .btn-started, .btn-action-primary, .liquid-glass {
+      background: rgba(255, 255, 255, 0.01) !important;
+      background-blend-mode: luminosity !important;
+      backdrop-filter: blur(4px) !important;
+      -webkit-backdrop-filter: blur(4px) !important;
+      border: none !important;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+      position: relative !important;
+      overflow: hidden !important;
+      border-radius: 9999px !important;
+      color: var(--text-main) !important;
+      font-size: 0.875rem !important;
+      padding: 10px 24px !important;
+      transition: transform 0.3s !important;
+      display: inline-block !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+    }
+
+    .btn-started::before, .btn-action-primary::before, .liquid-glass::before {
+      content: '' !important;
+      position: absolute !important;
+      inset: 0 !important;
+      border-radius: inherit !important;
+      padding: 1.4px !important;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%) !important;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+      -webkit-mask-composite: xor !important;
+      mask-composite: exclude !important;
+      pointer-events: none !important;
+    }
+
+    .btn-started:hover, .btn-action-primary:hover, .liquid-glass:hover {
+      transform: scale(1.03) !important;
+      background-color: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    .btn-login {
+      color: var(--text-secondary) !important;
+      font-size: 0.875rem !important;
+      transition: color 0.3s !important;
+      font-family: var(--font-body) !important;
+    }
+
+    .btn-login:hover {
+      color: var(--text-main) !important;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fade-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-rise { animation: fade-rise 0.8s ease-out both; }
+    .animate-fade-rise-delay { animation: fade-rise 0.8s ease-out 0.2s both; }
+    .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
+
+    /* Stretched video fit for the cinematic section container */
+    .hero-video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -61,206 +206,37 @@
   </header>
 
   <!-- Hero Section -->
-  <main class="hero-section" id="home" style="position: relative;">
-    <div class="hero-content">
-      <div class="badge-tag">
-        <span class="badge-pulse"></span>
-        ✨ AI Powered Career Platform
-      </div>
+  <main class="hero-section" id="home" style="position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; padding: 120px 24px 100px;">
+    <!-- Fullscreen looping background video -->
+    <video autoPlay loop muted playsInline class="hero-video-bg">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Subtle Contrast overlay -->
+    <div class="absolute inset-0 z-0 pointer-events-none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: rgba(0,0,0,0.2);"></div>
 
-      <h1 class="hero-title">
-        Ace Your Next Interview<br>
-        with <span class="iridescent-text">NextHire AI</span>
+    <!-- Centered Hero content -->
+    <div class="hero-content relative z-10 flex flex-col items-center max-w-7xl mx-auto" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <h1 class="animate-fade-rise" style="font-family: 'Instrument Serif', serif; font-size: 5rem; font-weight: normal; line-height: 0.95; letter-spacing: -2.46px; max-w: 6xl; margin-bottom: 24px; color: var(--text-main); font-style: normal;">
+        Where <em style="font-style: normal; color: var(--text-secondary);" class="not-italic text-muted-foreground">dreams</em> rise <br class="hidden sm:inline">
+        <em style="font-style: normal; color: var(--text-secondary);" class="not-italic text-muted-foreground">through the silence.</em>
       </h1>
 
-      <p class="hero-desc">
-        The ultimate AI career copilot that audits your resume, generates custom mock interviews, and runs live readiness grading.
+      <p class="animate-fade-rise-delay" style="color: var(--text-secondary); font-size: 1.15rem; max-w: 2xl; margin-top: 32px; line-height: 1.6; font-family: 'Inter', sans-serif;">
+        We're designing tools for deep thinkers, bold creators, and quiet rebels. Amid the chaos, we build digital spaces for sharp focus and inspired work.
       </p>
 
-      <div class="hero-actions" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
+      <div class="animate-fade-rise-delay-2" style="margin-top: 48px;">
         {% if session.get('user_id') %}
-          <a href="/dashboard" class="btn-action-primary">
-            Go to Dashboard
+          <a href="/dashboard" class="liquid-glass" style="border-radius: 9999px; padding: 20px 56px; font-size: 1rem; color: var(--text-main); display: inline-block; text-decoration: none; transition: transform 0.3s;">
+            Begin Journey
           </a>
         {% else %}
-          <a href="/signup" class="btn-action-primary">
-            Get Started
+          <a href="/signup" class="liquid-glass" style="border-radius: 9999px; padding: 20px 56px; font-size: 1rem; color: var(--text-main); display: inline-block; text-decoration: none; transition: transform 0.3s;">
+            Begin Journey
           </a>
         {% endif %}
       </div>
-
-      <!-- Social Proof element -->
-      <div class="social-proof" style="display: flex; align-items: center; gap: 16px; margin-top: 10px;">
-        <div class="avatar-group" style="display: flex; align-items: center;">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="User 1" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="User 2" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
-          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="User 3" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); margin-right: -10px; object-fit: cover;">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="User 4" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark); object-fit: cover;">
-        </div>
-        <div class="rating-info" style="display: flex; flex-direction: column; gap: 2px;">
-          <div class="stars" style="color: #FBBF24; font-size: 14px; letter-spacing: 1px;">★★★★★</div>
-          <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Trusted by 50,000+ job seekers</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Side: Glowing 3D SaaS Mockup & Floating HUDs -->
-    <div class="card-3d-wrapper" style="position: relative;">
-      <!-- Main card containing the SaaS dashboard mockup -->
-      <div class="holo-3d-card" id="holoCard" style="height: 380px;">
-        <div class="holo-3d-card-inner" style="padding: 24px; overflow: hidden; position: relative; border-radius: 24px; height: 100%; width: 100%; display: flex; flex-direction: column; gap: 16px; background: rgba(17, 24, 39, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08);">
-          
-          <!-- Mockup Header -->
-          <div class="mockup-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; z-index: 5;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); box-shadow: 0 0 8px var(--color-primary);"></div>
-              <span style="font-family: var(--font-body); font-size: 11px; letter-spacing: 0.5px; color: var(--text-secondary); font-weight: 600;">WORKSPACE_ACTIVE</span>
-            </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span style="font-size: 9px; padding: 2px 8px; border-radius: 12px; background: rgba(109, 93, 246, 0.1); color: var(--color-primary); font-weight: 600; font-family: var(--font-body);">LIVE FEED</span>
-            </div>
-          </div>
-
-          <!-- Mockup Top Row: Widgets -->
-          <div class="mockup-widgets" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; z-index: 5;">
-            <!-- Widget 1: Resume Score -->
-            <div class="mockup-widget-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px;">
-              <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <svg width="42" height="42" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
-                  <circle cx="18" cy="18" r="15" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-dasharray="92 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
-                </svg>
-                <span style="position: absolute; font-size: 11px; font-weight: 700; color: var(--text-main); font-family: var(--font-body);">92%</span>
-              </div>
-              <div style="display: flex; flex-direction: column; min-width: 0;">
-                <span style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Resume Score</span>
-                <span style="font-size: 12px; font-weight: 700; color: var(--color-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Excellent Match</span>
-              </div>
-            </div>
-
-            <!-- Widget 2: ATS Match -->
-            <div class="mockup-widget-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px;">
-              <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <svg width="42" height="42" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
-                  <circle cx="18" cy="18" r="15" fill="none" stroke="var(--color-secondary)" stroke-width="3.5" stroke-dasharray="88 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
-                </svg>
-                <span style="position: absolute; font-size: 11px; font-weight: 700; color: var(--text-main); font-family: var(--font-body);">88%</span>
-              </div>
-              <div style="display: flex; flex-direction: column; min-width: 0;">
-                <span style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">ATS Match</span>
-                <span style="font-size: 12px; font-weight: 700; color: var(--color-secondary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Strong Profile</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Mockup Bottom Row: Chart and details -->
-          <div class="mockup-details-grid" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px; flex-grow: 1; z-index: 5; min-height: 0;">
-            <!-- Line Chart Box -->
-            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-                <span style="font-size: 9px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Weekly Progress</span>
-                <span style="font-size: 8px; color: var(--color-primary); font-family: var(--font-body); font-weight: bold; flex-shrink: 0;">+14.2%</span>
-              </div>
-              <div style="flex-grow: 1; position: relative; margin-top: 4px; min-height: 0;">
-                <svg viewBox="0 0 200 70" width="100%" height="100%" style="overflow: visible; display: block;">
-                  <defs>
-                    <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.15"/>
-                      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <line x1="0" y1="10" x2="200" y2="10" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
-                  <line x1="0" y1="35" x2="200" y2="35" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
-                  <line x1="0" y1="60" x2="200" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"></line>
-                  <path d="M 0 55 C 40 50, 60 20, 100 28 C 140 35, 160 12, 200 8 L 200 70 L 0 70 Z" fill="url(#chartGlow)"></path>
-                  <path d="M 0 55 C 40 50, 60 20, 100 28 C 140 35, 160 12, 200 8" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"></path>
-                  <circle cx="200" cy="8" r="3" fill="#fff" stroke="var(--color-primary)" stroke-width="1.5"></circle>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Upcoming Interviews & Recent Activity List -->
-            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; justify-content: space-between;">
-              <div>
-                <span style="font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Upcoming Interview</span>
-                <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 6px 8px; border-radius: 8px; margin-top: 4px; min-width: 0;">
-                  <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-primary); flex-shrink: 0;"></div>
-                  <div style="display: flex; flex-direction: column; min-width: 0;">
-                    <span style="font-size: 9px; font-weight: 700; color: var(--text-main); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Google Technical</span>
-                    <span style="font-size: 7px; color: var(--text-secondary);">Today, 3:00 PM</span>
-                  </div>
-                </div>
-              </div>
-              <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
-                <span style="font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Recent Activity</span>
-                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
-                  <div style="font-size: 7px; color: var(--text-secondary); line-height: 1.2;">
-                    • <strong style="color: #fff;">Resume updated</strong> - scored 92%
-                  </div>
-                  <div style="font-size: 7px; color: var(--text-secondary); line-height: 1.2;">
-                    • <strong style="color: #fff;">Mock evaluation</strong> - 85% score
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Floating Glass widgets placed outside the clip card but inside the 3D tilt perspective wrapper -->
-      <!-- Widget 1: 85% Interview Readiness with circular progress gauge (Left-Middle) -->
-      <div class="floating-stat-box stat-box-1" style="top: 35%; left: -14%;">
-        <div class="stat-progress-circle" style="position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="34" height="34" viewBox="0 0 36 36">
-            <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"></circle>
-            <circle cx="18" cy="18" r="14" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-dasharray="85 100" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
-          </svg>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value">85%</span>
-          <span class="stat-lbl">Interview Readiness</span>
-        </div>
-      </div>
-
-      <!-- Widget 2: Ready Interview Coach with profile icon (Bottom-Left) -->
-      <div class="floating-stat-box stat-box-2" style="bottom: 10%; left: -8%;">
-        <div class="stat-icon" style="color: var(--color-secondary); background: rgba(79, 140, 255, 0.08); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value">Active Coach</span>
-          <span class="stat-lbl">Ready to Practice</span>
-        </div>
-      </div>
-
-      <!-- Widget 3: Horizontal indicators (Top-Right) -->
-      <div class="floating-stat-box stat-box-3" style="top: 15%; right: -15%; padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; width: 140px; align-items: stretch;">
-        <div class="stat-slider-row" style="display: flex; align-items: center; gap: 8px;">
-          <div class="stat-slider-bar" style="flex-grow: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; position: relative; overflow: hidden;">
-            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 75%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
-          </div>
-        </div>
-        <div class="stat-slider-row" style="display: flex; align-items: center; gap: 8px;">
-          <div class="stat-slider-bar" style="flex-grow: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; position: relative; overflow: hidden;">
-            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 45%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Widget 4: Chart bars (Bottom-Right) -->
-      <div class="floating-stat-box stat-box-4" style="bottom: 20%; right: -12%; padding: 14px; display: flex; gap: 6px; align-items: flex-end; height: 50px;">
-        <div class="stat-bar" style="width: 5px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: var(--color-primary);"></div></div>
-        <div class="stat-bar" style="width: 5px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 90%; background: var(--color-primary);"></div></div>
-        <div class="stat-bar" style="width: 5px; height: 16px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden;"><div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: var(--color-accent);"></div></div>
-      </div>
-    </div>
-
-    <!-- Decorative rotating sparkle star matching the bottom right of mockup -->
-    <div class="decor-star" style="position: absolute; bottom: -60px; right: 8%; width: 56px; height: 56px; opacity: 0.75; pointer-events: none; z-index: 5;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="width: 100%; height: 100%; color: rgba(255,255,255,0.35);">
-        <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="currentColor"></path>
-      </svg>
     </div>
   </main>
 
