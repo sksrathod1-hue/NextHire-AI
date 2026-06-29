@@ -6,15 +6,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-dark: #070B14;            /* Background */
-  --bg-card: #111827;            /* Cards */
+  --bg-dark: #030c1b;            /* Starry navy background */
+  --bg-card: #071329;            /* Card backing */
   --border-color: rgba(255, 255, 255, 0.08); /* Minimal border */
   
-  /* Accents */
-  --color-primary: #6D5DF6;      /* Primary Accent */
-  --color-secondary: #4F8CFF;    /* Secondary Accent */
-  --color-accent: #8B5CF6;       /* Accent */
-  --color-accent-light: rgba(109, 93, 246, 0.08); /* Translucent primary */
+  /* Accents matching the video (starry blue & warm gold candle reflections) */
+  --color-primary: #F59E0B;      /* Warm Amber/Gold */
+  --color-secondary: #3B82F6;    /* Starry Sky Blue */
+  --color-accent: #F43F5E;       /* Ember Rose */
+  --color-accent-light: rgba(245, 158, 11, 0.08); /* Translucent primary gold */
   
   /* Compat Aliases */
   --color-mint: var(--color-primary);
@@ -146,7 +146,7 @@ header {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
-  background: rgba(7, 11, 20, 0.8);
+  background: rgba(3, 12, 27, 0.35);
 }
 
 .logo-container {
@@ -236,11 +236,11 @@ nav ul li a:hover {
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.2s;
-  box-shadow: 0 4px 6px -1px rgba(1, 117, 255, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
 }
 
 .btn-started:hover {
-  background: #0060d9;
+  background: #D97706;
 }
 
 /* --- Hero Section --- */
@@ -2604,5 +2604,29 @@ footer .logo-text {
   .testimonials-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 20px !important;
+  }
+}
+
+/* Fullscreen looping background video container */
+.hero-video-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 860px;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-video-bg-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .hero-video-bg-container {
+    height: 1200px; /* Taller on mobile to cover stacked grids */
   }
 }
