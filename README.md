@@ -65,5 +65,3 @@ New features and UI improvements are being added regularly.
 * Progress Dashboard
 * Admin Panel
 
----
-
