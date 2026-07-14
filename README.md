@@ -67,6 +67,3 @@ New features and UI improvements are being added regularly.
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License.
