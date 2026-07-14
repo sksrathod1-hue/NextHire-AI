@@ -60,6 +60,19 @@ def view_interviews():
         print(f"{r['id']:<5} {r['user_id']:<10} {r['role']:<25} {r['score']:<8} {r['created_at']:<20}")
     conn.close()
 
+def view_contacts():
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT id, name, email, message, created_at FROM contact_messages LIMIT 10;")
+    rows = c.fetchall()
+    print("\n--- CONTACT FORM MESSAGES (Last 10) ---")
+    print(f"{'ID':<5} {'Name':<15} {'Email':<25} {'Message (Partial)':<40}")
+    print("-" * 85)
+    for r in rows:
+        msg = r['message'][:40] + "..." if len(r['message']) > 40 else r['message']
+        print(f"{r['id']:<5} {r['name']:<15} {r['email']:<25} {msg:<40}")
+    conn.close()
+
 def custom_query():
     print("\nEnter custom SQL query (e.g. SELECT * FROM contact_messages;):")
     query = input("sql> ").strip()
@@ -95,11 +108,12 @@ def main():
         print("2. View registered candidates (Users)")
         print("3. View resume analysis scores")
         print("4. View practice interview logs")
-        print("5. Run a custom SQL query")
-        print("6. Exit")
+        print("5. View contact form messages")
+        print("6. Run a custom SQL query")
+        print("7. Exit")
         print("=========================================")
         
-        choice = input("Enter choice (1-6): ").strip()
+        choice = input("Enter choice (1-7): ").strip()
         if choice == "1":
             view_tables()
         elif choice == "2":
@@ -109,8 +123,10 @@ def main():
         elif choice == "4":
             view_interviews()
         elif choice == "5":
-            custom_query()
+            view_contacts()
         elif choice == "6":
+            custom_query()
+        elif choice == "7":
             print("\nGoodbye!")
             break
         else:
