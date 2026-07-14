@@ -26,13 +26,13 @@ def view_tables():
 def view_users():
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT id, name, email, is_admin FROM users;")
+    c.execute("SELECT id, fullname, email, is_admin FROM users;")
     rows = c.fetchall()
     print("\n--- REGISTERED USERS ---")
     print(f"{'ID':<5} {'Name':<15} {'Email':<25} {'Is Admin':<10}")
     print("-" * 60)
     for r in rows:
-        print(f"{r['id']:<5} {r['name']:<15} {r['email']:<25} {r['is_admin']:<10}")
+        print(f"{r['id']:<5} {r['fullname']:<15} {r['email']:<25} {r['is_admin']:<10}")
     conn.close()
 
 def view_resumes():
