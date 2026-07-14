@@ -38,14 +38,26 @@ def view_users():
 def view_resumes():
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT id, user_id, score, matched_skills FROM resume_analysis LIMIT 10;")
+    c.execute("SELECT id, user_id, filename, ats_score, matched_skills FROM resumes LIMIT 10;")
     rows = c.fetchall()
     print("\n--- RESUME ANALYSIS SCORES (Last 10) ---")
-    print(f"{'ID':<5} {'User ID':<10} {'Score':<8} {'Matched Skills (Partial)':<40}")
-    print("-" * 75)
+    print(f"{'ID':<5} {'User ID':<10} {'Filename':<20} {'Score':<8} {'Matched Skills (Partial)':<40}")
+    print("-" * 85)
     for r in rows:
         skills = r['matched_skills'][:40] + "..." if len(r['matched_skills']) > 40 else r['matched_skills']
-        print(f"{r['id']:<5} {r['user_id']:<10} {r['score']:<8} {skills:<40}")
+        print(f"{r['id']:<5} {r['user_id']:<10} {r['filename']:<20} {r['ats_score']:<8} {skills:<40}")
+    conn.close()
+
+def view_interviews():
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT id, user_id, role, score, created_at FROM interviews LIMIT 10;")
+    rows = c.fetchall()
+    print("\n--- PRACTICE INTERVIEWS LOG (Last 10) ---")
+    print(f"{'ID':<5} {'User ID':<10} {'Role':<25} {'Score':<8} {'Date':<20}")
+    print("-" * 75)
+    for r in rows:
+        print(f"{r['id']:<5} {r['user_id']:<10} {r['role']:<25} {r['score']:<8} {r['created_at']:<20}")
     conn.close()
 
 def custom_query():
@@ -82,11 +94,12 @@ def main():
         print("1. View list of tables")
         print("2. View registered candidates (Users)")
         print("3. View resume analysis scores")
-        print("4. Run a custom SQL query")
-        print("5. Exit")
+        print("4. View practice interview logs")
+        print("5. Run a custom SQL query")
+        print("6. Exit")
         print("=========================================")
         
-        choice = input("Enter choice (1-5): ").strip()
+        choice = input("Enter choice (1-6): ").strip()
         if choice == "1":
             view_tables()
         elif choice == "2":
@@ -94,8 +107,10 @@ def main():
         elif choice == "3":
             view_resumes()
         elif choice == "4":
-            custom_query()
+            view_interviews()
         elif choice == "5":
+            custom_query()
+        elif choice == "6":
             print("\nGoodbye!")
             break
         else:
